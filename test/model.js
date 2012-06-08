@@ -63,4 +63,22 @@ describe('Cantina Redis', function() {
       });
     });
   });
+
+  it('can run before/after hooks', function(done) {
+    var model = new RedisModel().init({name: 'buster'}, {client: app.redis});
+    model.on('save:before', function(model) {
+      this.properties.job = 'dog';
+    });
+    model.save(function(err) {
+      assert.ifError(err);
+      coll.get(model.id, function(err, saved) {
+        assert.ifError(err);
+        assert.strictEqual(saved.properties.job, 'dog', 'property from hook was saved');
+        saved.destroy(function(err) {
+          assert.ifError(err);
+          done();
+        });
+      });
+    });
+  });
 });
