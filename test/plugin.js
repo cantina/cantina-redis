@@ -9,7 +9,7 @@ var assert = require('assert')
   ;
 
 describe('Cantina Redis', function() {
-  var app;
+  var app, coll;
   before(function() {
     app = cantina.createApp({
       name: 'cantina-redis-test',
@@ -17,6 +17,7 @@ describe('Cantina Redis', function() {
       amino: false
     });
     app.use(require('../').plugin);
+    coll = new RedisCollection().init({client: app.redis});
   });
 
   var myId;
@@ -29,13 +30,25 @@ describe('Cantina Redis', function() {
     });
   });
 
+  var myModel;
   it('can get the model', function(done) {
-    var coll = new RedisCollection().init({client: app.redis});
     coll.get(myId, function(err, model) {
       assert.ok(model, 'got a model back');
       assert.strictEqual(model.id, myId);
       assert.strictEqual(model.properties.name, 'carlos');
+      myModel = model;
       done();
+    });
+  });
+
+  it('can destroy the model', function(done) {
+    myModel.destroy(function(err) {
+      assert.ifError(err);
+      coll.get(myId, function(err, model) {
+        assert.ifError(err);
+        assert.strictEqual(model, null, 'model was deleted');
+        done();
+      });
     });
   });
 });
