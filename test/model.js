@@ -97,6 +97,7 @@ describe('Cantina Redis', function() {
         assert.ifError(err);
         cleanup.push(model);
         coll.find({job: 'ghostbuster'}, function(err, models) {
+          assert.ifError(err);
           assert.strictEqual(models.length, 1);
           assert.strictEqual(models[0].properties.name, 'egon');
           done();
