@@ -6,6 +6,7 @@ var assert = require('assert')
   , cantina = require('cantina')
   , RedisModel = require('../').RedisModel
   , RedisCollection = require('../').RedisCollection
+  , async = require('async')
   ;
 
 describe('Cantina Redis', function() {
@@ -87,7 +88,6 @@ describe('Cantina Redis', function() {
     });
   });
 
-  var myOtherModel;
   it('can index a field', function(done) {
     coll.indexes.push('job');
     coll.create({name: 'egon', job: 'ghostbuster'}, function(err, model) {
@@ -102,6 +102,40 @@ describe('Cantina Redis', function() {
           assert.strictEqual(models[0].properties.name, 'egon');
           done();
         });
+      });
+    });
+  });
+
+  it('can sort and limit', function(done) {
+    var tasks = [], max = 0;
+    coll.schema.timestamp = {
+      type: 'number'
+    };
+    for (var i = 0; i < 100; i++) {
+      tasks.push(function(cb) {
+        var rand = Math.random();
+        max = Math.max(rand, max);
+        coll.create({timestamp: rand}, function(err, model) {
+          cleanup.push(model);
+          cb(err, model);
+        });
+      })
+    }
+    async.series(tasks, function(err, results) {
+      assert.ifError(err);
+      assert.ok(results, 'created some timestamp records');
+      coll.find({}, {sort: 'timestamp', desc: true, limit: 70, skip: 1}, function(err, models) {
+        assert.ifError(err);
+        assert.ok(models[0].properties.timestamp < max, 'max timestamp skipped');
+        assert.strictEqual(models.length, 70, 'correct limit');
+        var last;
+        models.forEach(function(model) {
+          if (last) {
+            assert.ok(model.properties.timestamp < last, 'timestamp decreasing');
+          }
+          last = model.properties.timestamp;
+        });
+        done();
       });
     });
   });
