@@ -9,7 +9,7 @@ var assert = require('assert')
   ;
 
 describe('Cantina Redis', function() {
-  var app, coll;
+  var app, coll, cleanup = [];
   before(function() {
     app = cantina.createApp({
       name: 'cantina-redis-test',
@@ -20,9 +20,16 @@ describe('Cantina Redis', function() {
     coll = new RedisCollection().init({client: app.redis});
   });
 
+  after(function() {
+    var model;
+    while (model = cleanup.pop()) {
+      model.destroy();
+    }
+  });
+
   var myId;
   it('can create a model', function(done) {
-    var model = new RedisModel().init({name: 'carlos'}, {client: app.redis});
+    var model = new RedisModel().init({name: 'carlos'}, coll);
     model.save(function(err) {
       assert.ifError(err);
       myId = model.id;
@@ -65,7 +72,8 @@ describe('Cantina Redis', function() {
   });
 
   it('can run before/after hooks', function(done) {
-    var model = new RedisModel().init({name: 'buster'}, {client: app.redis});
+    var model = new RedisModel().init({name: 'buster'}, coll);
+    cleanup.push(model);
     model.on('save:before', function(model) {
       this.properties.job = 'dog';
     });
@@ -74,8 +82,23 @@ describe('Cantina Redis', function() {
       coll.get(model.id, function(err, saved) {
         assert.ifError(err);
         assert.strictEqual(saved.properties.job, 'dog', 'property from hook was saved');
-        saved.destroy(function(err) {
-          assert.ifError(err);
+        done();
+      });
+    });
+  });
+
+  var myOtherModel;
+  it('can index a field', function(done) {
+    coll.indexes.push('job');
+    coll.create({name: 'egon', job: 'ghostbuster'}, function(err, model) {
+      assert.ifError(err);
+      cleanup.push(model);
+      coll.create({name: 'kobe', job: 'baller'}, function(err, model) {
+        assert.ifError(err);
+        cleanup.push(model);
+        coll.find({job: 'ghostbuster'}, function(err, models) {
+          assert.strictEqual(models.length, 1);
+          assert.strictEqual(models[0].properties.name, 'egon');
           done();
         });
       });
