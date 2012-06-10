@@ -179,4 +179,23 @@ describe('Cantina Redis', function() {
       });
     });
   });
+
+  it('can store a complex object', function(done) {
+    var obj = {
+      history: {
+        'may 14th 2012': {
+          birthdays: ['erin', 'mark', new Date(), /something/],
+          hours: 24
+        },
+        today: {
+          date: new Date()
+        }
+      },
+      patterns: [/blah/]
+    };
+    coll.create(obj, function(err, model) {
+      cleanup.push(model);
+      done();
+    });
+  });
 });

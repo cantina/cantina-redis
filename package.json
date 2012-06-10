@@ -15,7 +15,8 @@
     "pkginfo": "~0.2.3",
     "cantina-model": "git+ssh://git@github.com/cantina/cantina-model.git",
     "redis": "~0.7.2",
-    "async": "~0.1.22"
+    "async": "~0.1.22",
+    "hydration": "~0.1.0"
   },
   "devDependencies": {
     "mocha": "~1.0.3",
