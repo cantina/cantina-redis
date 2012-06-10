@@ -4,21 +4,16 @@
 
 var assert = require('assert')
   , cantina = require('cantina')
+  , redis = require('redis')
   , RedisModel = require('../').RedisModel
   , RedisCollection = require('../').RedisCollection
   , async = require('async')
   ;
 
 describe('Cantina Redis', function() {
-  var app, coll, cleanup = [];
+  var coll, cleanup = [];
   before(function() {
-    app = cantina.createApp({
-      name: 'cantina-redis-test',
-      silent: true,
-      amino: false
-    });
-    app.use(require('../').plugin);
-    coll = new RedisCollection().init({client: app.redis});
+    coll = new RedisCollection().init({client: redis.createClient()});
   });
 
   after(function() {
