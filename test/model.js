@@ -134,4 +134,49 @@ describe('Cantina Redis', function() {
       });
     });
   });
+
+  it('can filter with sort and skip/limit', function(done) {
+    var tasks = [], blue_min = 1;
+    coll.indexes.push('color');
+    coll.schema.timestamp = {
+      type: 'number'
+    };
+    for (var i = 0; i < 10; i++) {
+      tasks.push(function(cb) {
+        var rand = Math.random();
+        coll.create({color: 'red', timestamp: rand}, function(err, model) {
+          cleanup.push(model);
+          cb(err, model);
+        });
+      })
+    }
+    for (var i = 0; i < 10; i++) {
+      tasks.push(function(cb) {
+        var rand = Math.random();
+        blue_min = Math.min(rand, blue_min);
+        coll.create({color: 'blue', timestamp: rand}, function(err, model) {
+          cleanup.push(model);
+          cb(err, model);
+        });
+      })
+    }
+    async.series(tasks, function(err, results) {
+      assert.ifError(err);
+      assert.ok(results, 'created some records');
+      coll.find({color: 'blue'}, {sort: 'timestamp', limit: 10, skip: 1}, function(err, models) {
+        assert.ifError(err);
+        assert.ok(models[0].properties.timestamp > blue_min, 'blue_min timestamp skipped');
+        assert.strictEqual(models.length, 9, 'correct filter/limit/skip');
+        var last;
+        models.forEach(function(model) {
+          if (last) {
+            assert.ok(model.properties.timestamp > last, 'timestamp ascending');
+          }
+          last = model.properties.timestamp;
+          assert.strictEqual(model.properties.color, 'blue', 'filtered to blue');
+        });
+        done();
+      });
+    });
+  });
 });
