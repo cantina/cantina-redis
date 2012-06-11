@@ -116,7 +116,7 @@ describe('Cantina Redis', function() {
         });
       })
     }
-    async.series(tasks, function(err, results) {
+    async.parallel(tasks, function(err, results) {
       assert.ifError(err);
       assert.ok(results, 'created some timestamp records');
       coll.find({}, {sort: 'timestamp', desc: true, limit: 70, skip: 1}, function(err, models) {
@@ -182,6 +182,7 @@ describe('Cantina Redis', function() {
 
   it('can store a complex object', function(done) {
     var obj = {
+      _id: 1234,
       history: {
         'may 14th 2012': {
           birthdays: ['erin', 'mark', new Date(), /something/],
