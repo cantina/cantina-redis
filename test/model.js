@@ -12,7 +12,7 @@ var assert = require('assert')
 describe('model/collection', function() {
   var coll, cleanup = [];
   before(function() {
-    coll = new RedisCollection().init({client: redis.createClient()});
+    coll = new RedisCollection({client: redis.createClient()});
   });
 
   after(function() {
@@ -24,7 +24,7 @@ describe('model/collection', function() {
 
   var myId;
   it('can create a model', function(done) {
-    var model = new RedisModel().init({name: 'carlos'}, coll);
+    var model = new RedisModel({name: 'carlos'}, coll);
     model.save(function(err) {
       assert.ifError(err);
       myId = model.id;
@@ -67,7 +67,7 @@ describe('model/collection', function() {
   });
 
   it('can run before/after hooks', function(done) {
-    var model = new RedisModel().init({name: 'buster'}, coll);
+    var model = new RedisModel({name: 'buster'}, coll);
     cleanup.push(model);
     model.on('save:before', function(model) {
       this.properties.job = 'dog';
@@ -213,7 +213,7 @@ describe('model/collection', function() {
           type: 'string'
         }
       };
-      fruit = new RedisCollection().init({namespace: 'fruit', schema: schema, client: redis.createClient()});
+      fruit = new RedisCollection({namespace: 'fruit', schema: schema, client: redis.createClient()});
     });
 
     it('can create a new collection', function(done) {
