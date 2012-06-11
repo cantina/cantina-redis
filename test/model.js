@@ -201,4 +201,55 @@ describe('Cantina Redis', function() {
       done();
     });
   });
+
+  describe('separate collection', function() {
+    var fruit;
+    before(function() {
+      var schema = {
+        color: {
+          type: 'number',
+          index: true
+        },
+        type: {
+          type: 'string'
+        }
+      };
+      fruit = new RedisCollection().init({namespace: 'fruit', schema: schema, client: redis.createClient()});
+    });
+
+    it('can create a new collection', function(done) {
+      fruit.find({}, function(err, models) {
+        assert.ifError(err);
+        assert.strictEqual(models.length, 0, 'new collection has no models');
+        done();
+      });
+    });
+
+    it('can add a model to new collection', function(done) {
+      fruit.create({type: 'banana', color: 0xE3CF57}, function(err, model) {
+        assert.ifError(err);
+        assert.strictEqual(model.properties.color, 0xE3CF57);
+        cleanup.push(model);
+        done();
+      });
+    });
+
+    it('can add a second model to new collection', function(done) {
+      fruit.create({type: 'orange', color: 0xFF7D40}, function(err, model) {
+        assert.ifError(err);
+        assert.strictEqual(model.properties.color, 0xFF7D40);
+        cleanup.push(model);
+        done();
+      });
+    });
+
+    it('can query new collection', function(done) {
+      fruit.find({color: 0xE3CF57}, function(err, models) {
+        assert.ifError(err);
+        assert.strictEqual(models.length, 1);
+        assert.strictEqual(models[0].properties.type, 'banana');
+        done();
+      });
+    });
+  });
 });
