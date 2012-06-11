@@ -191,10 +191,12 @@ describe('Cantina Redis', function() {
           date: new Date()
         }
       },
-      patterns: [/blah/]
+      patterns: [/blah/, /etc/]
     };
     coll.create(obj, function(err, model) {
       cleanup.push(model);
+      assert.ifError(err);
+      assert.deepEqual(model.toJSON(), obj);
       done();
     });
   });
