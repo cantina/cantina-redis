@@ -1,16 +1,15 @@
 /**
- * test/plugin.js - Tests for Cantina Redis.
+ * test/model.js - Tests for Cantina Redis.
  */
 
 var assert = require('assert')
-  , cantina = require('cantina')
   , redis = require('redis')
   , RedisModel = require('../').RedisModel
   , RedisCollection = require('../').RedisCollection
   , async = require('async')
   ;
 
-describe('Cantina Redis', function() {
+describe('model/collection', function() {
   var coll, cleanup = [];
   before(function() {
     coll = new RedisCollection().init({client: redis.createClient()});
