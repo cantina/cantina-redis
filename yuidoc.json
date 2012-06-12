@@ -1,0 +1,12 @@
+{
+  "name": "Cantina Redis",
+  "description": "Create redis-backed models and interact with redis server",
+  "version": "0.0.1",
+  "url": "http://cantina.github.com/",
+  "options": {
+    "linkNatives": "true",
+    "exclude": "node_modules",
+    "paths": "lib",
+    "outdir": "docs"
+  }
+}
