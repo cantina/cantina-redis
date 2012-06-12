@@ -1,6 +1,6 @@
 {
   "name": "cantina-redis",
-  "description": "Create redis-backed models or interact with redis server",
+  "description": "Create redis-backed models and interact with redis server",
   "version": "0.0.1",
   "private": true,
   "homepage": "cantina.github.com",
@@ -21,7 +21,8 @@
   },
   "devDependencies": {
     "mocha": "~1.0.3",
-    "cantina": "git+ssh://git@github.com/cantina/cantina.git"
+    "cantina": "git+ssh://git@github.com/cantina/cantina.git",
+    "yuidocjs": "~0.3.13"
   },
   "optionalDependencies": {},
   "engines": {
