@@ -11,7 +11,13 @@ var utils = require('cantina-utils')
 describe('model/collection', function() {
   var coll, cleanup = [];
   before(function() {
-    coll = new RedisCollection({client: redis.createClient()});
+    var schema = {
+      job: {
+        type: 'string',
+        index: true
+      }
+    };
+    coll = new RedisCollection({client: redis.createClient(), schema: schema});
   });
 
   after(function() {
@@ -81,8 +87,7 @@ describe('model/collection', function() {
     });
   });
 
-  it('can index a field', function(done) {
-    coll.indexes.push('job');
+  it('can query an index', function(done) {
     coll.create({name: 'egon', job: 'ghostbuster'}, function(err, model) {
       assert.ifError(err);
       cleanup.push(model);
