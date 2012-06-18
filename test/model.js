@@ -104,6 +104,22 @@ describe('model/collection', function() {
     });
   });
 
+  it('can findOne with an indexed query', function(done) {
+    coll.create({name: 'egon', job: 'ghostbuster'}, function(err, model) {
+      assert.ifError(err);
+      cleanup.push(model);
+      coll.create({name: 'kobe', job: 'baller'}, function(err, model) {
+        assert.ifError(err);
+        cleanup.push(model);
+        coll.findOne({job: 'ghostbuster'}, function(err, model) {
+          assert.ifError(err);
+          assert.strictEqual(model.properties.name, 'egon');
+          done();
+        });
+      });
+    });
+  });
+
   it('can sort and limit', function(done) {
     var tasks = [], max = 0;
     coll.schema.timestamp = {
