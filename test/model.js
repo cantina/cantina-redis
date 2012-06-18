@@ -3,7 +3,7 @@
  */
 var utils = require('cantina-utils')
   , assert = require('assert')
-  , redis = require('redis')
+  , redis = require('haredis')
   , RedisModel = require('../').RedisModel
   , RedisCollection = require('../').RedisCollection
   ;
