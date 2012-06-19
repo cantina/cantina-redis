@@ -14,7 +14,7 @@
   "dependencies": {
     "cantina-utils": "git+ssh://git@github.com/cantina/cantina-utils.git",
     "cantina-model": "git+ssh://git@github.com/cantina/cantina-model.git",
-    "haredis": "git+https://github.com/carlos8f/haredis.git",
+    "haredis": "~0.2.0",
     "hydration": "~0.1.0"
   },
   "devDependencies": {
