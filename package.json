@@ -1,7 +1,7 @@
 {
   "name": "cantina-redis",
   "description": "Create redis-backed models and interact with redis server",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "homepage": "cantina.github.com",
   "repository": {
