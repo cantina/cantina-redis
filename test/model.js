@@ -4,8 +4,9 @@
 var utils = require('cantina-utils')
   , assert = require('assert')
   , redis = require('haredis')
-  , RedisModel = require('../').RedisModel
-  , RedisCollection = require('../').RedisCollection
+  , lib = require('../')
+  , RedisModel = lib.RedisModel
+  , RedisCollection = lib.RedisCollection
   ;
 
 describe('model/collection', function() {
@@ -24,25 +25,23 @@ describe('model/collection', function() {
     }
   }
   before(function() {
-    MyModel = function MyModel(attrs, options) {
-      MyModel.super.call(this, attrs, options);
-    }
-    utils.inherits(MyModel, RedisModel);
-    MyModel.schema = {
-      properties: {
-        job: {
-          type: 'string',
-          index: true
-        },
-        color: {
-          type: 'string',
-          index: true
-        },
-        timestamp: {
-          type: 'number'
+    MyModel = lib.createModel(RedisModel, {
+      schema: {
+        properties: {
+          job: {
+            type: 'string',
+            index: true
+          },
+          color: {
+            type: 'string',
+            index: true
+          },
+          timestamp: {
+            type: 'number'
+          }
         }
       }
-    };
+    });
     coll = new RedisCollection({client: redis.createClient(), model: MyModel});
   });
 
@@ -254,22 +253,20 @@ describe('model/collection', function() {
   describe('separate collection', function() {
     var fruit;
     before(function() {
-      function Fruit(attrs, options) {
-        Fruit.super.call(this, attrs, options);
-      }
-      utils.inherits(Fruit, RedisModel);
-      Fruit.schema = {
-        name: 'fruit',
-        properties: {
-          color: {
-            type: 'number',
-            index: true
-          },
-          type: {
-            type: 'string'
+      var Fruit = lib.createModel(RedisModel, {
+        schema: {
+          name: 'fruit',
+          properties: {
+            color: {
+              type: 'number',
+              index: true
+            },
+            type: {
+              type: 'string'
+            }
           }
         }
-      };
+      });
       fruit = new RedisCollection({model: Fruit, client: redis.createClient()});
     });
 
