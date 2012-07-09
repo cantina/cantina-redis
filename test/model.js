@@ -46,12 +46,19 @@ describe('model/collection', function() {
     coll = new RedisCollection({client: redis.createClient(), model: MyModel});
   });
 
-  after(function() {
-    var model;
+  after(function(done) {
+    var model, tasks = [];
     while (model = cleanup.pop()) {
-      model.destroy();
+      (function(model) {
+        tasks.push(function(cb) {
+          model.destroy(cb);
+        });
+      })(model);
     }
-    assert.strictEqual(cleanup.length, 0, 'no models left over');
+    utils.async.parallel(tasks, function() {
+      assert.strictEqual(cleanup.length, 0, 'no models left over');
+      done();
+    });
   });
 
   var myId;
