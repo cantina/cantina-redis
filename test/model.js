@@ -46,18 +46,7 @@ describe('model/collection', function() {
   });
 
   after(function(done) {
-    var model, tasks = [];
-    while (model = cleanup.pop()) {
-      (function(model) {
-        tasks.push(function(cb) {
-          model.destroy(cb);
-        });
-      })(model);
-    }
-    utils.async.parallel(tasks, function() {
-      assert.strictEqual(cleanup.length, 0, 'no models left over');
-      done();
-    });
+    lib.destroyAll(done, cleanup);
   });
 
   var myId;
