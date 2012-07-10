@@ -78,6 +78,10 @@ describe('views', function() {
       ];
     });
 
+    afterEach(function() {
+      view.removeAllListeners();
+    });
+
     after(function(done) {
       lib.destroyAll(view, models, done);
     });
@@ -110,6 +114,45 @@ describe('views', function() {
         model.save();
       });
     });
+
+    it('should reflect model updates that miss the filter', function(done) {
+      var apple = models[0];
+
+      view.on('error', function(err, model) {
+        assert.ifError(err);
+      });
+
+      view.on('model:removed', function(model) {
+        assert.equal(apple.properties.name, model.properties.name);
+        view.list(function(err, models) {
+          assert.ifError(err);
+          assert.equal(models.length, 2, 'Wrong number of models listed');
+          done();
+        });
+      });
+
+      apple.properties.group = 'candy';
+      apple.save();
+    });
+
+    it('should reflect destroyed models', function(done) {
+      var orange = models[2];
+
+      view.on('error', function(err, model) {
+        assert.ifError(err);
+      });
+
+      view.on('model:removed', function(model) {
+        assert.equal(orange.properties.name, model.properties.name);
+        view.list(function(err, models) {
+          assert.ifError(err);
+          assert.equal(models.length, 1, 'Wrong number of models listed');
+          done();
+        });
+      });
+
+      orange.destroy();
+    });
   });
 
   describe('view sorted by property value', function() {
@@ -135,11 +178,15 @@ describe('views', function() {
       ];
     });
 
+    afterEach(function() {
+      view.removeAllListeners();
+    });
+
     after(function(done) {
       lib.destroyAll(view, models, done);
     });
 
-    it('should list() the models in correct order', function(done) {
+    it('should list() the models in correct default order', function(done) {
       var count = 0;
 
       view.on('error', function(err, model) {
@@ -153,14 +200,7 @@ describe('views', function() {
             assert.equal(models[0].properties.name, 'orange', 'Orange was not the first result');
             assert.equal(models[1].properties.name, 'apple', 'Apple was not the second result');
             assert.equal(models[2].properties.name, 'pear', 'Pear was not the third result');
-
-            view.list(10, 0, 'ASC', function(err, models) {
-              assert.ifError(err);
-              assert.equal(models[0].properties.name, 'pear', 'Pear was not the first result');
-              assert.equal(models[1].properties.name, 'apple', 'Apple was not the second result');
-              assert.equal(models[2].properties.name, 'orange', 'Orange was not the third result');
-              done();
-            });
+            done();
           });
         }
       });
@@ -168,6 +208,40 @@ describe('views', function() {
       models.forEach(function(model) {
         model.save();
       });
+    });
+
+    it('should list() the models in a custom direction', function(done) {
+      view.on('error', function(err, model) {
+        assert.ifError(err);
+      });
+
+      view.list(10, 0, 'ASC', function(err, models) {
+        assert.ifError(err);
+        assert.equal(models[0].properties.name, 'pear', 'Pear was not the first result');
+        assert.equal(models[1].properties.name, 'apple', 'Apple was not the second result');
+        assert.equal(models[2].properties.name, 'orange', 'Orange was not the third result');
+        done();
+      });
+    });
+
+    it('should reflect changes model sort properties', function(done) {
+      var pear = models[3];
+
+      view.on('error', function(err, model) {
+        assert.ifError(err);
+      });
+
+      view.on('model:updated', function(model) {
+        assert.equal(model.properties.name, pear.properties.name);
+        view.list(10, 0, 'ASC', function(err, models) {
+          assert.ifError(err);
+          assert.equal(models[2].properties.name, 'pear', 'Pear was not the third result');
+          done();
+        });
+      });
+
+      pear.properties.calories = 200;
+      pear.save();
     });
   });
 
