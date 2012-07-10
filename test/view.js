@@ -6,12 +6,11 @@ var assert = require('assert'),
     redis = require('haredis'),
     lib = require('../'),
     RedisCollection = lib.RedisCollection,
-    RedisModel = lib.RedisModel,
     RedisView = lib.RedisView,
     client = redis.createClient();
 
 describe('views', function() {
-  var Food = lib.createModel(RedisModel, {
+  var Food = lib.createModel({
     schema: {
       name: 'food',
       properties: {
@@ -27,21 +26,24 @@ describe('views', function() {
       }
     }
   });
-  var Drink = lib.createModel(RedisModel, {
+  var Drink = lib.createModel({
     schema: {
       name: 'drink',
       properties: {
         group: {
-          type: 'string'
+          type: 'string',
+          required: true
         },
         name: {
-          type: 'string'
+          type: 'string',
+          required: true
         },
         calories: {
           type: 'number'
         },
         diet: {
-          type: 'boolean'
+          type: 'boolean',
+          default: false
         }
       }
     }
@@ -56,24 +58,28 @@ describe('views', function() {
   });
 
   describe('view with no sort', function() {
-    var view = new RedisView({
-      client: client,
-      name: 'fruit',
-      collections: [pantry],
-      filter: function(model) {
-        return model.properties.group && model.properties.group === 'fruit';
-      }
+    var view, models;
+
+    before(function() {
+      view = new RedisView({
+        client: client,
+        name: 'fruit',
+        collections: [pantry],
+        filter: function(model) {
+          return model.properties.group && model.properties.group === 'fruit';
+        }
+      });
+      models = [
+        new Food({group: 'fruit',   name: 'apple'}),
+        new Food({group: 'dessert', name: 'cake'}),
+        new Food({group: 'fruit',   name: 'orange'}),
+        new Food({group: 'fruit',   name: 'pear'}),
+        new Food({group: 'meat',    name: 'chicken'})
+      ];
     });
-    var models = [
-      new Food({group: 'fruit',   name: 'apple',    calories: 90}),
-      new Food({group: 'dessert', name: 'cake',     calories: 500}),
-      new Food({group: 'fruit',   name: 'orange',   calories: 130}),
-      new Food({group: 'fruit',   name: 'pear',     calories: 72}),
-      new Food({group: 'meat',    name: 'chicken',  calories: 270})
-    ];
 
     after(function(done) {
-      lib.destroyAll(done, view, models);
+      lib.destroyAll(view, models, done);
     });
 
     it('should list() the correct models', function(done) {
@@ -104,30 +110,33 @@ describe('views', function() {
         model.save();
       });
     });
-
   });
 
   describe('view sorted by property value', function() {
-    var view = new RedisView({
-      client: client,
-      name: 'fruitByCalories',
-      collections: [pantry],
-      sort: 'calories',
-      dir: 'DESC',
-      filter: function(model) {
-        return model.properties.group && model.properties.group === 'fruit';
-      }
+    var view, models;
+
+    before(function() {
+      view = new RedisView({
+        client: client,
+        name: 'fruitByCalories',
+        collections: [pantry],
+        sort: 'calories',
+        dir: 'DESC',
+        filter: function(model) {
+          return model.properties.group && model.properties.group === 'fruit';
+        }
+      });
+      models = [
+        new Food({group: 'fruit',   name: 'apple',    calories: 90}),
+        new Food({group: 'dessert', name: 'cake',     calories: 500}),
+        new Food({group: 'fruit',   name: 'orange',   calories: 130}),
+        new Food({group: 'fruit',   name: 'pear',     calories: 72}),
+        new Food({group: 'meat',    name: 'chicken',  calories: 270})
+      ];
     });
-    var models = [
-      new Food({group: 'fruit',   name: 'apple',    calories: 90}),
-      new Food({group: 'dessert', name: 'cake',     calories: 500}),
-      new Food({group: 'fruit',   name: 'orange',   calories: 130}),
-      new Food({group: 'fruit',   name: 'pear',     calories: 72}),
-      new Food({group: 'meat',    name: 'chicken',  calories: 270})
-    ];
 
     after(function(done) {
-      lib.destroyAll(done, view, models);
+      lib.destroyAll(view, models, done);
     });
 
     it('should list() the models in correct order', function(done) {

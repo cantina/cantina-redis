@@ -25,7 +25,7 @@ describe('model/collection', function() {
     }
   }
   before(function() {
-    MyModel = lib.createModel(RedisModel, {
+    MyModel = lib.createModel({
       schema: {
         properties: {
           job: {
@@ -46,7 +46,7 @@ describe('model/collection', function() {
   });
 
   after(function(done) {
-    lib.destroyAll(done, cleanup);
+    lib.destroyAll(cleanup, done);
   });
 
   var myId;
@@ -242,7 +242,7 @@ describe('model/collection', function() {
   describe('separate collection', function() {
     var fruit;
     before(function() {
-      var Fruit = lib.createModel(RedisModel, {
+      var Fruit = lib.createModel({
         schema: {
           name: 'fruit',
           properties: {
