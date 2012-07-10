@@ -224,7 +224,7 @@ describe('views', function() {
       });
     });
 
-    it('should reflect changes model sort properties', function(done) {
+    it('should reflect changes to model sort property', function(done) {
       var pear = models[3];
 
       view.on('error', function(err, model) {
