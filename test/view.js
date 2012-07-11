@@ -249,4 +249,52 @@ describe('views', function() {
 
   });
 
+  describe('repopulate', function() {
+    var view, models;
+
+    before(function(done) {
+      var count = 0;
+      models = [
+        new Food({group: 'fruit',   name: 'apple',    calories: 90}),
+        new Food({group: 'dessert', name: 'cake',     calories: 500}),
+        new Food({group: 'fruit',   name: 'orange',   calories: 130}),
+        new Food({group: 'fruit',   name: 'pear',     calories: 72}),
+        new Food({group: 'meat',    name: 'chicken',  calories: 270})
+      ];
+      models.forEach(function(model) {
+        model.save(function(err) {
+          assert.ifError(err);
+          if (++count >= 5) {
+            done();
+          }
+        });
+      });
+    });
+
+    after(function(done) {
+      lib.destroyAll(view, models, done);
+    });
+
+    it('should repopulate a view', function(done) {
+      view = new RedisView({
+        client: client,
+        name: 'fruitByCalories',
+        collections: [pantry],
+        sort: 'calories',
+        dir: 'DESC',
+        filter: function(model) {
+          return model.properties.group && model.properties.group === 'fruit';
+        }
+      });
+      view.repopulate(function(err) {
+        assert.ifError(err);
+        view.list(function(err, models) {
+          assert.ifError(err);
+          assert.equal(models.length, 3, 'Wrong number of models in the view');
+          done();
+        });
+      });
+    });
+  });
+
 });
