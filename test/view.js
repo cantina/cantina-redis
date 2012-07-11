@@ -48,14 +48,6 @@ describe('views', function() {
       }
     }
   });
-  var pantry = new RedisCollection({
-    client: client,
-    model: Food
-  });
-  var vendingMachine = new RedisCollection({
-    client: client,
-    model: Drink
-  });
 
   describe('view with no sort', function() {
     var view, models;
@@ -64,7 +56,7 @@ describe('views', function() {
       view = new RedisView({
         client: client,
         name: 'fruit',
-        collections: [pantry],
+        models: [Food],
         filter: function(model) {
           return model.properties.group && model.properties.group === 'fruit';
         }
@@ -162,7 +154,7 @@ describe('views', function() {
       view = new RedisView({
         client: client,
         name: 'fruitByCalories',
-        collections: [pantry],
+        models: [Food],
         sort: 'calories',
         dir: 'DESC',
         filter: function(model) {
@@ -279,7 +271,7 @@ describe('views', function() {
       view = new RedisView({
         client: client,
         name: 'fruitByCalories',
-        collections: [pantry],
+        models: [Food],
         sort: 'calories',
         dir: 'DESC',
         filter: function(model) {
