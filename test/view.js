@@ -237,8 +237,79 @@ describe('views', function() {
     });
   });
 
-  describe('view with multiple collections', function() {
+  describe('Cached view', function() {
+    var view, models;
 
+    before(function() {
+      view = new RedisView({
+        client: client,
+        name: 'fruitByCaloriesCached',
+        models: [Food],
+        sort: 'calories',
+        dir: 'DESC',
+        cache: true,
+        filter: function(model) {
+          return model.properties.group && model.properties.group === 'fruit';
+        }
+      });
+      models = [
+        new Food({group: 'fruit',   name: 'apple',    calories: 90}),
+        new Food({group: 'dessert', name: 'cake',     calories: 500}),
+        new Food({group: 'fruit',   name: 'orange',   calories: 130}),
+        new Food({group: 'fruit',   name: 'pear',     calories: 72}),
+        new Food({group: 'meat',    name: 'chicken',  calories: 270})
+      ];
+    });
+
+    afterEach(function() {
+      view.removeAllListeners();
+    });
+
+    after(function(done) {
+      lib.destroyAll(view, models, done);
+    });
+
+    it('should list() the models in correct default order', function(done) {
+      var count = 0;
+
+      view.on('error', function(err, model) {
+        assert.ifError(err);
+      });
+
+      view.on('model:added', function(model) {
+        if (++count === 3) {
+          view.list(function(err, models) {
+            assert.ifError(err);
+            assert.equal(models[0].properties.name, 'orange', 'Orange was not the first result');
+            assert.equal(models[1].properties.name, 'apple', 'Apple was not the second result');
+            assert.equal(models[2].properties.name, 'pear', 'Pear was not the third result');
+            done();
+          });
+        }
+      });
+
+      models.forEach(function(model) {
+        model.save();
+      });
+    });
+
+    it('should list() the models in a custom direction', function(done) {
+      view.on('error', function(err, model) {
+        assert.ifError(err);
+      });
+
+      view.list(10, 0, 'ASC', function(err, models) {
+        assert.ifError(err);
+        assert.equal(models[0].properties.name, 'pear', 'Pear was not the first result');
+        assert.equal(models[1].properties.name, 'apple', 'Apple was not the second result');
+        assert.equal(models[2].properties.name, 'orange', 'Orange was not the third result');
+        done();
+      });
+    });
+  });
+
+  describe('view with multiple collections', function() {
+    // TODO: Implement this test.
   });
 
   describe('repopulate', function() {
@@ -270,7 +341,7 @@ describe('views', function() {
     it('should repopulate a view', function(done) {
       view = new RedisView({
         client: client,
-        name: 'fruitByCalories',
+        name: 'fruitByCaloriesPopulate',
         models: [Food],
         sort: 'calories',
         dir: 'DESC',
