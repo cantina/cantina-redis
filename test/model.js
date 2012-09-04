@@ -1,13 +1,12 @@
 /**
  * test/model.js - Tests for Cantina Redis.
  */
-var utils = require('cantina-utils')
+var async = require('async')
   , assert = require('assert')
   , redis = require('haredis')
   , lib = require('../')
   , RedisModel = lib.RedisModel
   , RedisCollection = lib.RedisCollection
-  ;
 
 describe('model/collection', function() {
   var coll, cleanup = [], MyModel;
@@ -16,7 +15,7 @@ describe('model/collection', function() {
     cleanup.push(model);
   }
   function assertValid(err) {
-    if (utils.isArray(err)) {
+    if (Array.isArray(err)) {
       console.error(err);
       assert.fail('validation errors');
     }
@@ -154,7 +153,7 @@ describe('model/collection', function() {
         });
       })
     }
-    utils.async.parallel(tasks, function(err, results) {
+    async.parallel(tasks, function(err, results) {
       assertValid(err);
       assert.ok(results, 'created some timestamp records');
       coll.find({}, {sort: 'timestamp', desc: true, limit: 70, skip: 1}, function(err, models) {
@@ -197,7 +196,7 @@ describe('model/collection', function() {
         });
       })
     }
-    utils.async.parallel(tasks, function(err, results) {
+    async.parallel(tasks, function(err, results) {
       assertValid(err);
       assert.ok(results, 'created some records');
       coll.find({color: 'blue'}, {sort: 'timestamp', limit: 10, skip: 1}, function(err, models) {

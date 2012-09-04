@@ -2,7 +2,6 @@
  * Tests for RedisViews.
  */
 var assert = require('assert'),
-    utils = require('cantina-utils'),
     redis = require('haredis'),
     lib = require('../'),
     RedisCollection = lib.RedisCollection,

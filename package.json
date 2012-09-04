@@ -15,10 +15,11 @@
     "cantina": "git+ssh://git@github.com/cantina/cantina.git#1.x"
   },
   "dependencies": {
-    "cantina-utils": "git+ssh://git@github.com/cantina/cantina-utils.git",
     "cantina-model": "git+ssh://git@github.com/cantina/cantina-model.git",
     "haredis": "~0.2.0",
-    "hydration": "~0.2.0"
+    "hydration": "~0.2.0",
+    "async": "~0.1.22",
+    "inherits": "~1.0.0"
   },
   "devDependencies": {
     "mocha": "~1.0.3",
