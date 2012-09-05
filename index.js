@@ -16,9 +16,12 @@ exports.module = redis;
 
 exports.init = function (app, done) {
   var conf = app.conf.get('redis');
+  if (typeof conf === 'string') {
+    conf = {nodes: [conf]};
+  }
   app.redis = redis.createClient(conf.nodes, conf);
   app.redis.on('error', app.emit.bind(app, 'error'));
-  app.redis.once('ready', done);
+  app.redis.once('connected', done);
 
   Object.keys(exports).forEach(function (k) {
     if (typeof app.redis[k] === 'undefined') {
