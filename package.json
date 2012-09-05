@@ -7,7 +7,6 @@
   "repository": {
     "url": ""
   },
-  "main": "./lib",
   "scripts": {
     "test": "make test"
   },
