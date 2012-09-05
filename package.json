@@ -10,9 +10,6 @@
   "scripts": {
     "test": "make test"
   },
-  "peerDependencies": {
-    "cantina": "git+ssh://git@github.com/cantina/cantina.git#1.x"
-  },
   "dependencies": {
     "cantina-model": "git+ssh://git@github.com/cantina/cantina-model.git",
     "haredis": "~0.2.0",
