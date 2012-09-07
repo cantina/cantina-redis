@@ -19,6 +19,10 @@ exports.init = function (app, done) {
   if (typeof conf === 'string') {
     conf = {nodes: [conf]};
   }
+  else if (Array.isArray(conf)) {
+    delete conf.nodes;
+    conf = {nodes: conf};
+  }
   app.redis = redis.createClient(conf.nodes, conf);
   app.redis.on('error', app.emit.bind(app, 'error'));
   app.redis.once('connected', done);
@@ -28,6 +32,4 @@ exports.init = function (app, done) {
       app.redis[k] = exports[k];
     }
   });
-
-  done();
 };
