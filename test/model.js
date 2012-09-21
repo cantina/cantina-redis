@@ -4,9 +4,10 @@
 var async = require('async')
   , assert = require('assert')
   , redis = require('haredis')
-  , lib = require('../')
-  , RedisModel = lib.RedisModel
-  , RedisCollection = lib.RedisCollection
+  , createModel = require('../lib/create-model')
+  , destroyAll = require('../lib/destroy-all')
+  , RedisModel = require('../lib/model')
+  , RedisCollection = require('../lib/collection')
 
 describe('model/collection', function() {
   var coll, cleanup = [], MyModel;
@@ -24,7 +25,7 @@ describe('model/collection', function() {
     }
   }
   before(function() {
-    MyModel = lib.createModel({
+    MyModel = createModel({
       schema: {
         properties: {
           job: {
@@ -45,7 +46,7 @@ describe('model/collection', function() {
   });
 
   after(function(done) {
-    lib.destroyAll(cleanup, done);
+    destroyAll(cleanup, done);
   });
 
   var myId;
@@ -151,7 +152,7 @@ describe('model/collection', function() {
           assertModel(model);
           cb(err, model);
         });
-      })
+      });
     }
     async.parallel(tasks, function(err, results) {
       assertValid(err);
@@ -184,7 +185,7 @@ describe('model/collection', function() {
           assertModel(model);
           cb(err, model);
         });
-      })
+      });
     }
     for (var i = 0; i < 10; i++) {
       tasks.push(function(cb) {
@@ -194,7 +195,7 @@ describe('model/collection', function() {
           assertModel(model);
           cb(err, model);
         });
-      })
+      });
     }
     async.parallel(tasks, function(err, results) {
       assertValid(err);
@@ -241,7 +242,7 @@ describe('model/collection', function() {
   describe('separate collection', function() {
     var fruit;
     before(function() {
-      var Fruit = lib.createModel({
+      var Fruit = createModel({
         schema: {
           name: 'fruit',
           properties: {

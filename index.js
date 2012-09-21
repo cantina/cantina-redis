@@ -1,35 +1,29 @@
-var redis = require('haredis')
+var app = require('cantina'),
+    redis = require('haredis');
 
-exports.name = 'redis';
+app.conf.add({
+  redis: {
+    nodes: ['127.0.0.1:6379']
+  }
+});
 
-exports.defaults = {
-  nodes: ['127.0.0.1:6379']
-};
-
-exports.RedisModel = require('./lib/model');
-exports.createModel = require('./lib/create-model');
-exports.createClient = redis.createClient;
-exports.RedisCollection = require('./lib/collection');
-exports.RedisView = require('./lib/view');
-exports.destroyAll = require('./lib/destroy-all');
-exports.module = redis;
-
-exports.init = function (app, done) {
+app.on('init', function (done) {
   var conf = app.conf.get('redis');
   if (typeof conf === 'string') {
-    conf = {nodes: [conf]};
+    conf = { nodes: [conf] };
   }
   else if (Array.isArray(conf)) {
-    delete conf.nodes;
-    conf = {nodes: conf};
+    conf = { nodes: conf };
   }
   app.redis = redis.createClient(conf.nodes, conf);
   app.redis.on('error', app.emit.bind(app, 'error'));
   app.redis.once('connect', done);
 
-  Object.keys(exports).forEach(function (k) {
-    if (typeof app.redis[k] === 'undefined') {
-      app.redis[k] = exports[k];
-    }
-  });
-};
+  app.redis.module = redis;
+  app.redis.RedisModel = require('./lib/model');
+  app.redis.createModel = require('./lib/create-model');
+  app.redis.createClient = redis.createClient;
+  app.redis.RedisCollection = require('./lib/collection');
+  app.redis.RedisView = require('./lib/view');
+  app.redis.destroyAll = require('./lib/destroy-all');
+});

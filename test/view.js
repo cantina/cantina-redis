@@ -3,13 +3,14 @@
  */
 var assert = require('assert'),
     redis = require('haredis'),
-    lib = require('../'),
-    RedisCollection = lib.RedisCollection,
-    RedisView = lib.RedisView,
+    createModel = require('../lib/create-model'),
+    destroyAll = require('../lib/destroy-all'),
+    RedisCollection = require('../lib/collection'),
+    RedisView = require('../lib/view'),
     client = redis.createClient();
 
 describe('views', function() {
-  var Food = lib.createModel({
+  var Food = createModel({
     schema: {
       name: 'food',
       properties: {
@@ -25,7 +26,7 @@ describe('views', function() {
       }
     }
   });
-  var Drink = lib.createModel({
+  var Drink = createModel({
     schema: {
       name: 'drink',
       properties: {
@@ -74,7 +75,7 @@ describe('views', function() {
     });
 
     after(function(done) {
-      lib.destroyAll(view, models, done);
+      destroyAll(view, models, done);
     });
 
     it('should list() the correct models', function(done) {
@@ -174,7 +175,7 @@ describe('views', function() {
     });
 
     after(function(done) {
-      lib.destroyAll(view, models, done);
+      destroyAll(view, models, done);
     });
 
     it('should list() the models in correct default order', function(done) {
@@ -265,7 +266,7 @@ describe('views', function() {
     });
 
     after(function(done) {
-      lib.destroyAll(view, models, done);
+      destroyAll(view, models, done);
     });
 
     it('should list() the models in correct default order', function(done) {
@@ -334,7 +335,7 @@ describe('views', function() {
     });
 
     after(function(done) {
-      lib.destroyAll(view, models, done);
+      destroyAll(view, models, done);
     });
 
     it('should repopulate a view', function(done) {
