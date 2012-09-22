@@ -16,14 +16,14 @@ app.on('init', function (done) {
     conf = { nodes: conf };
   }
   app.redis = redis.createClient(conf.nodes, conf);
+  app.redis.module = redis;
   app.redis.on('error', app.emit.bind(app, 'error'));
   app.redis.once('connect', done);
-
-  app.redis.module = redis;
-  app.redis.RedisModel = require('./lib/model');
-  app.redis.createModel = require('./lib/create-model');
-  app.redis.createClient = redis.createClient;
-  app.redis.RedisCollection = require('./lib/collection');
-  app.redis.RedisView = require('./lib/view');
-  app.redis.destroyAll = require('./lib/destroy-all');
 });
+
+app.redis.RedisModel = require('./lib/model');
+app.redis.createModel = require('./lib/create-model');
+app.redis.createClient = redis.createClient;
+app.redis.RedisCollection = require('./lib/collection');
+app.redis.RedisView = require('./lib/view');
+app.redis.destroyAll = require('./lib/destroy-all');
