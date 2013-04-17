@@ -1,19 +1,16 @@
 var app = require('cantina'),
     redis = require('haredis');
 
-app.conf.add({
-  redis: {
-    nodes: ['127.0.0.1:6379']
-  }
-});
-
 app.on('init', function (done) {
-  var conf = app.conf.get('redis');
+  var conf = app.conf.get('redis') || {};
   if (typeof conf === 'string') {
     conf = { nodes: [conf] };
   }
   else if (Array.isArray(conf)) {
     conf = { nodes: conf };
+  }
+  else if (!conf.nodes) {
+    conf.nodes = ['127.0.0.1:6379'];
   }
   app.redis = redis.createClient(conf.nodes, conf);
   app.redis.on('error', app.emit.bind(app, 'error'));
