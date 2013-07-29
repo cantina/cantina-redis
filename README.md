@@ -7,12 +7,7 @@ Provides
 --------
 - **app.redis** - Redis client (haredis).
 - **app.redis.module** - The required `haredis` module.
-- **app.redis.createClient** - Create a new redis client.
-- **app.redis.RedisModel** - A class for modeling data in redis.
-- **app.redis.createModel** - Creates a Model class from a BaseClass with some useful app-specific functionality and defaults.
-- **app.redis.RedisCollection** - Abstracts working with 'collections' of redis models.
-- **app.redis.RedisView** - Creates a filtered, sorted, optionally cached list of models.
-- **app.redis.destroyAll** - Calls the 'destroy' method on an arbitrary number of objects.
+- **app.redisKey** - Returns a prefixed key suitable for redis queries.
 
 Configuration
 -------------
@@ -22,14 +17,11 @@ Configuration
 ```js
 {
   redis: {
-    nodes: ['127.0.0.1:6379']
+    nodes: ['127.0.0.1:6379'],
+    prefix: 'cantina'
   }
 }
 ```
-
-Usage
------
-TODO: Provide documentation for models, collections, and views.
 
 - - -
 
@@ -40,7 +32,7 @@ strategy firm located in Aptos, CA and Washington, D.C.
 - - -
 
 ### License: MIT
-Copyright (C) 2012 Terra Eclipse, Inc. ([http://www.terraeclipse.com](http://www.terraeclipse.com))
+Copyright (C) 2013 Terra Eclipse, Inc. ([http://www.terraeclipse.com](http://www.terraeclipse.com))
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
