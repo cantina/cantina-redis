@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "mocha": "~1.12.0",
-    "cantina": "git+ssh://git@github.com:cantina/cantina.git#3.x"
+    "cantina": "cantina/cantina#3.x"
   },
   "optionalDependencies": {}
 }
