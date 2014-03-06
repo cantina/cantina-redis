@@ -15,7 +15,7 @@
     "cantina-model": "git+ssh://git@github.com/cantina/cantina-model.git#2.x",
     "haredis": "~0.2.0",
     "hydration": "~0.3.1",
-    "async": "~0.1.22",
+    "async": "~0.2.5",
     "inherits": "~1.0.0"
   },
   "devDependencies": {
