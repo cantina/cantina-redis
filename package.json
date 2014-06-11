@@ -1,8 +1,10 @@
 {
   "name": "cantina-redis",
   "description": "Provides a redis client for Cantina applications.",
-  "version": "3.0.1",
-  "private": true,
+  "version": "4.0.0-dev",
+  "publishConfig": {
+    "registry": "https://npm-registry.terraeclipse.com"
+  },
   "main": "cantina-redis.js",
   "homepage": "http://cantina.github.com",
   "repository": {
@@ -13,11 +15,14 @@
     "test": "make test"
   },
   "dependencies": {
-    "haredis": "~0.2.14"
+    "haredis": "~0.2.15"
+  },
+  "peerDependencies": {
+    "cantina": "~4.0.0"
   },
   "devDependencies": {
-    "mocha": "~1.12.0",
-    "cantina": "cantina/cantina#3.x"
+    "mocha": "*",
+    "cantina": "~4.0.0"
   },
   "optionalDependencies": {}
 }
