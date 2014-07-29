@@ -4,10 +4,10 @@ describe('redis', function() {
   var app;
 
   beforeEach(function(done) {
-    app = require('cantina');
+    app = require('cantina').createApp();
     app.boot(function (err) {
       assert.ifError(err);
-      require('../');
+      app.require('../');
       done();
     });
   });
