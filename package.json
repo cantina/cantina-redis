@@ -1,7 +1,7 @@
 {
   "name": "cantina-redis",
   "description": "Provides a redis client for Cantina applications.",
-  "version": "4.0.0-dev",
+  "version": "4.1.0",
   "publishConfig": {
     "registry": "https://npm-registry.terraeclipse.com"
   },
