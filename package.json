@@ -2,15 +2,18 @@
   "name": "cantina-redis",
   "description": "Provides a redis client for Cantina applications.",
   "version": "4.1.0",
-  "publishConfig": {
-    "registry": "https://npm-registry.terraeclipse.com"
-  },
   "main": "cantina-redis.js",
   "homepage": "http://cantina.github.com",
   "repository": {
     "type": "git",
     "url": "git://github.com/cantina/cantina-redis.git"
   },
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  ],
   "scripts": {
     "test": "make test"
   },
