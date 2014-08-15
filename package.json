@@ -21,11 +21,11 @@
     "haredis": "~0.2.15"
   },
   "peerDependencies": {
-    "cantina": "~4.1.0"
+    "cantina": "^4.1.0"
   },
   "devDependencies": {
     "mocha": "*",
-    "cantina": "~4.1.0"
+    "cantina": "^4.1.0"
   },
   "optionalDependencies": {}
 }
